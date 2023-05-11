@@ -1,0 +1,8 @@
+{
+  "name": "Telegram Reader",
+  "domains": ["sensor"],
+  "documentation": "https://github.com/dmitriytim/telegram_reader",
+  "issue_tracker": "https://github.com/dmitriytim/telegram_reader/issues",
+  "dependencies": ["http"],
+  "render_readme": true
+}
