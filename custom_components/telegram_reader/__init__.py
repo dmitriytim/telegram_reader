@@ -1,11 +1,13 @@
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from .telegram_reader import TelegramReader  # Убедитесь, что TelegramReader находится в том же каталоге
+from homeassistant import config_entries
+from .config_flow import MyConfigFlow
 
 DOMAIN = "telegram_reader"
 
-async def async_setup(hass: HomeAssistant, config: dict):
-    # Возвращает True, если инициализация прошла успешно
+async def async_setup(hass, config):
+    hass.config_entries.async_register_flow_handler(DOMAIN, MyConfigFlow)
     return True
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
