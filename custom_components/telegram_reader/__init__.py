@@ -1,29 +1,24 @@
-from telethon.sync import TelegramClient
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from .telegram_reader import TelegramReader  # Убедитесь, что TelegramReader находится в том же каталоге
 
-class TelegramReader:
-    def __init__(self, config):
-        self.api_id = config["api_id"]
-        self.api_hash = config["api_hash"]
-        self.phone = config["phone"]
-        self.channels = config["channels"].split(',')
+DOMAIN = "telegram_reader"
 
-        self.client = TelegramClient(self.phone, self.api_id, self.api_hash)
+async def async_setup(hass: HomeAssistant, config: dict):
+    # Возвращает True, если инициализация прошла успешно
+    return True
 
-    async def connect(self):
-        await self.client.connect()
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
+    # Создаем экземпляр нашего компонента с данными из настроек пользователя
+    telegram_reader = TelegramReader(entry.data)
 
-    async def get_messages(self, channel):
-        # Получаем полную информацию о канале
-        full = await self.client(GetFullChannelRequest(channel))
-        # Получаем историю сообщений канала
-        messages = await self.client(GetHistoryRequest(
-            peer=full.chats[0],
-            limit=10,  # количество сообщений для извлечения
-            offset_id=0,
-            offset_date=None,
-            add_offset=0,
-            max_id=0,
-            min_id=0,
-            hash=0
-        ))
-        return messages.messages  # возвращает список объектов Message
+    # Устанавливаем экземпляр компонента для использования в других частях нашей интеграции
+    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = telegram_reader
+
+    # Добавляем сенсоры для нашего компонента
+    hass.async_create_task(
+        hass.config_entries.async_forward_entry_setup(entry, "sensor")
+    )
+
+    # Возвращает True, если инициализация прошла успешно
+    return True
