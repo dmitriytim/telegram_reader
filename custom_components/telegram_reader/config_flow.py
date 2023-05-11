@@ -4,7 +4,7 @@ from homeassistant.data_entry_flow import FlowResult
 import voluptuous as vol
 from telethon import TelegramClient
 from telethon.errors import SessionPasswordNeededError
-
+DOMAIN = "telegram_reader"
 class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
     CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
