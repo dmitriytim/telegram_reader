@@ -12,6 +12,7 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_user(self, user_input=None) -> FlowResult:
         errors = {}
         if user_input is not None:
+            self.data = user_input
             self.api_id = user_input["api_id"]
             self.api_hash = user_input["api_hash"]
             self.phone = user_input["phone"]
@@ -38,6 +39,7 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_verification(self, user_input=None) -> FlowResult:
         errors = {}
         if user_input is not None:
+            self.data.update(user_input)
             try:
                 self.verification_code = user_input["verification_code"]
                 # На этом месте код проверяет подлинность кода подтверждения
@@ -62,6 +64,7 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_password(self, user_input=None):
         errors = {}
         if user_input is not None:
+            self.data.update(user_input)
             await self.client.sign_in(password=user_input["password"])
             return await self.async_step_channels()
 
@@ -74,6 +77,7 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_channels(self, user_input=None) -> FlowResult:
         errors = {}
         if user_input is not None:
+            self.data.update(user_input)
             return self.async_create_entry(title="Telegram Channels", data=user_input)
 
         dialogs = await self.client.get_dialogs()
