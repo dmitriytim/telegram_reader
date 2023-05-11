@@ -5,5 +5,5 @@
   "documentation": "https://github.com/my_username/my_integration",
   "requirements": ["telethon==1.23.0"],
   "codeowners": ["@timofeyevdima"],
-  "version": "1.0.0"
+  "version": "1.0.1"
 }
