@@ -105,12 +105,12 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         channels = {dialog.name: dialog.name for dialog in dialogs if dialog.is_channel}
 
         # Если у нас уже есть запись, используем сохраненные каналы как значения по умолчанию
-        if self._async_current_entries():
-            entry = self._async_current_entries()[0]
-            default_channels = entry.data.get("channels", [])
-        else:
-            default_channels = []
-
+#         if self._async_current_entries():
+#             entry = self._async_current_entries()[0]
+#             default_channels = entry.data.get("channels", [])
+#         else:
+#             default_channels = []
+        default_channels = []
         return self.async_show_form(
             step_id="channels",
             data_schema=vol.Schema(
