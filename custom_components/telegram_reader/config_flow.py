@@ -29,6 +29,24 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if not await self.client.is_user_authorized():
                 await self.client.send_code_request(self.phone)
                 return await self.async_step_verify()
+            if self._async_current_entries():
+                # Если уже существует запись, взять данные из нее
+                entry = self._async_current_entries()[0]
+                self.api_id = entry.data["api_id"]
+                self.api_hash = entry.data["api_hash"]
+                self.phone = entry.data["phone"]
+
+                # Если уже есть сохраненная конфигурация, отобразить ее в форме
+                return self.async_show_form(
+                    step_id="user",
+                    data_schema=vol.Schema(
+                        {
+                            vol.Required("api_id", default=self.api_id): str,
+                            vol.Required("api_hash", default=self.api_hash): str,
+                            vol.Required("phone", default=self.phone): str,
+                        }
+                    ),
+                )
 
         return self.async_show_form(
             step_id="user",
