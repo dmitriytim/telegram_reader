@@ -1,0 +1,9 @@
+{
+  "domain": "telegram_reader",
+  "name": "Telegram Reader",
+  "config_flow": true,
+  "documentation": "https://github.com/my_username/my_integration",
+  "requirements": ["telethon==1.23.0"],
+  "codeowners": ["@timofeyevdima"],
+  "version": "1.0.0"
+}
