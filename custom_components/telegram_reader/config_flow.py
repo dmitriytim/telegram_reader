@@ -8,10 +8,7 @@ DOMAIN = "telegram_reader"
 class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
     CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
-    async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-        self.api_id = entry.data["api_id"]
-        self.api_hash = entry.data["api_hash"]
-        self.phone = entry.data["phone"]
+
 
     async def async_step_user(self, user_input=None) -> FlowResult:
         errors = {}
