@@ -2,6 +2,7 @@ from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 import voluptuous as vol
+DOMAIN = "telegram_reader"
 
 class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
