@@ -35,7 +35,7 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    async def async_step_verify(self, user_input=None):
+    async def async_step_verification(self, user_input=None) -> FlowResult:
         errors = {}
         if user_input is not None:
             try:
@@ -56,13 +56,6 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Required("verification_code"): str,
                 }
             ),
-            errors=errors,
-
-            return await self.async_step_channels()
-
-        return self.async_show_form(
-            step_id="verify",
-            data_schema=vol.Schema({vol.Required("code"): str}),
             errors=errors,
         )
 
