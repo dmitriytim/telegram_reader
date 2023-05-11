@@ -36,17 +36,16 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    async def async_step_verif(self, user_input=None) -> FlowResult:
+    async def async_step_verify(self, user_input=None) -> FlowResult:
         errors = {}
         if user_input is not None:
             self.data.update(user_input)
             try:
                 self.verification_code = user_input["verification_code"]
-                # На этом месте код проверяет подлинность кода подтверждения
-                if await self._check_verification_code(self.verification_code):
-                    return self.async_create_entry(title="Telegram Channels", data=self.data)
-                else:
-                    errors["verification_code"] = "invalid_verification_code"
+                await self.client.sign_in(self.phone, self.verification_code)
+                return await self.async_step_channels()
+            except SessionPasswordNeededError:
+                return await self.async_step_password()
             except Exception as e:
                 errors["base"] = "unknown"
                 _LOGGER.error(f"Failed to process verification code: {e}")
@@ -60,6 +59,7 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             ),
             errors=errors,
         )
+
 
     async def async_step_password(self, user_input=None):
         errors = {}
