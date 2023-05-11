@@ -36,7 +36,7 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    async def async_step_verification(self, user_input=None) -> FlowResult:
+    async def async_step_verif(self, user_input=None) -> FlowResult:
         errors = {}
         if user_input is not None:
             self.data.update(user_input)
