@@ -5,6 +5,7 @@ import voluptuous as vol
 from telethon import TelegramClient
 from telethon.errors import SessionPasswordNeededError
 import logging
+from telethon import types
 
 _LOGGER = logging.getLogger(__name__)
 DOMAIN = "telegram_reader"
