@@ -111,20 +111,21 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     "channels": self.channels,
                 },
             )
+
         dialogs = await self.client.get_dialogs()
         channels = {dialog.entity.id: dialog.entity.title for dialog in dialogs if isinstance(dialog.entity, types.Channel)}
-
-        channel_options = {channel['id']: channel['name'] for channel in channels}
-        default_channels = self.channels if self.channels else list(channel_options.keys())
 
         return self.async_show_form(
             step_id="channels",
             data_schema=vol.Schema(
                 {
-                    vol.Required("channels", default=default_channels): vol.All(cv.ensure_list, [vol.In(channels)]),
+                    vol.Required("channels", default=self.channels): vol.Schema(
+                        {channel_id: str for channel_id in channels.keys()}
+                    ),
                 }
             ),
             errors=errors,
         )
+
 
 
