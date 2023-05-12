@@ -7,7 +7,7 @@ class TelegramReader:
         self.api_id = config["api_id"]
         self.api_hash = config["api_hash"]
         self.phone = config["phone"]
-        self.channels = config["channels"].split(',')
+        self.channels = [name for name, selected in config["channels"].items() if selected]
 
         self.client = TelegramClient(self.phone, self.api_id, self.api_hash)
 
