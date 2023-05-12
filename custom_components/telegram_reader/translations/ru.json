@@ -1,0 +1,39 @@
+{
+  "component.telegram_reader": {
+    "config": {
+      "step": {
+        "user": {
+          "data": {
+            "api_id": "ID API",
+            "api_hash": "Хэш API",
+            "phone": "Телефон"
+          }
+        },
+        "verification": {
+          "data": {
+            "verification_code": "Код верификации"
+          }
+        },
+        "password": {
+          "data": {
+            "password": "Пароль"
+          }
+        },
+        "channels": {
+          "data": {
+            "channels": "Каналы"
+          }
+        }
+      },
+      "error": {
+        "invalid_id": "Недействительный ID API",
+        "invalid_hash": "Недействительный хэш API",
+        "invalid_phone": "Недействительный номер телефона",
+        "invalid_verification_code": "Недействительный код верификации",
+        "invalid_password": "Недействительный пароль",
+        "invalid_channels": "Недействительные каналы"
+      },
+      "title": "Читатель Telegram"
+    }
+  }
+}
