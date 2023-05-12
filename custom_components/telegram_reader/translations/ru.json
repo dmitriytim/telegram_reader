@@ -3,24 +3,32 @@
     "config": {
       "step": {
         "user": {
-          "data": {
+          "title": "Пользовательские настройки",
+          "description": "Введите свои данные Telegram",
+          "data_schema": {
             "api_id": "ID API",
             "api_hash": "Хэш API",
             "phone": "Телефон"
           }
         },
         "verification": {
-          "data": {
+          "title": "Верификация",
+          "description": "Введите код верификации",
+          "data_schema": {
             "verification_code": "Код верификации"
           }
         },
         "password": {
-          "data": {
+          "title": "Пароль",
+          "description": "Введите пароль",
+          "data_schema": {
             "password": "Пароль"
           }
         },
         "channels": {
-          "data": {
+          "title": "Каналы",
+          "description": "Выберите каналы для чтения",
+          "data_schema": {
             "channels": "Каналы"
           }
         }
