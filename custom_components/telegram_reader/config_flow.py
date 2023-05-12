@@ -113,7 +113,8 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
 
         dialogs = await self.client.get_dialogs()
-        channels = {dialog.entity.id: dialog.entity.title for dialog in dialogs if isinstance(dialog.entity, types.Channel)}
+        channels = {dialog.entity.id: dialog.entity.title for dialog in dialogs if
+                    isinstance(dialog.entity, types.Channel)}
 
         return self.async_show_form(
             step_id="channels",
@@ -126,6 +127,5 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             ),
             errors=errors,
         )
-
 
 
