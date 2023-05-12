@@ -97,32 +97,32 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-   async def async_step_channels(self, user_input=None):
-       errors = {}
-       if user_input is not None:
-           self.channels = [id for id, selected in user_input["channels"].items() if selected]
-           return self.async_create_entry(
-               title="Telegram Channels",
-               data={
-                   "api_id": self.api_id,
-                   "api_hash": self.api_hash,
-                   "phone": self.phone,
-                   "channels": self.channels,
-               },
-           )
+    async def async_step_channels(self, user_input=None):
+        errors = {}
+        if user_input is not None:
+            self.channels = [id for id, selected in user_input["channels"].items() if selected]
+            return self.async_create_entry(
+                title="Telegram Channels",
+                data={
+                    "api_id": self.api_id,
+                    "api_hash": self.api_hash,
+                    "phone": self.phone,
+                    "channels": self.channels,
+                },
+            )
 
-       channels = await self.hass.async_add_executor_job(self.get_channel_list)
-       channel_options = {channel['id']: channel['name'] for channel in channels}
-       default_channels = self.channels if self.channels else list(channel_options.keys())
+        channels = await self.hass.async_add_executor_job(self.get_channel_list)
+        channel_options = {channel['id']: channel['name'] for channel in channels}
+        default_channels = self.channels if self.channels else list(channel_options.keys())
 
-       return self.async_show_form(
-           step_id="channels",
-           data_schema=vol.Schema(
-               {
-                   vol.Required("channels", default=default_channels): cv.multi_select(channel_options),
-               }
-           ),
-           errors=errors,
-       )
+        return self.async_show_form(
+            step_id="channels",
+            data_schema=vol.Schema(
+                {
+                    vol.Required("channels", default=default_channels): cv.multi_select(channel_options),
+                }
+            ),
+            errors=errors,
+        )
 
 
