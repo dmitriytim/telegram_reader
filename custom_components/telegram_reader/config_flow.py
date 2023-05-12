@@ -71,7 +71,7 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 _LOGGER.error(f"Failed to process verification code: {e}")
 
         return self.async_show_form(
-            step_id="verification",
+            step_id="verify",
             data_schema=vol.Schema(
                 {
                     vol.Required("verification_code"): str,
