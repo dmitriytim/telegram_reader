@@ -110,8 +110,9 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     "channels": self.channels,
                 },
             )
+        dialogs = await self.client.get_dialogs()
+        channels = {dialog.entity.id: dialog.entity.title for dialog in dialogs if isinstance(dialog.entity, types.Channel)}
 
-        channels = await self.hass.async_add_executor_job(self.get_channel_list)
         channel_options = {channel['id']: channel['name'] for channel in channels}
         default_channels = self.channels if self.channels else list(channel_options.keys())
 
@@ -119,7 +120,7 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="channels",
             data_schema=vol.Schema(
                 {
-                    vol.Required("channels", default=default_channels): cv.multi_select(channel_options),
+                    vol.Required("channels", default=default_channels): vol.All(cv.ensure_list, [vol.In(channels)]),
                 }
             ),
             errors=errors,
