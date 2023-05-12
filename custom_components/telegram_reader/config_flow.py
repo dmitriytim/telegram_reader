@@ -60,7 +60,6 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_verify(self, user_input=None) -> FlowResult:
         errors = {}
         if user_input is not None:
-            self.data.update(user_input)
             try:
                 self.verification_code = user_input["verification_code"]
                 await self.client.sign_in(self.phone, self.verification_code)
