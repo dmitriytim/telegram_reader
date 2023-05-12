@@ -97,22 +97,32 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    async def async_step_channels(self, user_input=None) -> FlowResult:
-        errors = {}
-        if user_input is not None:
-            self.data.update(user_input)
-            return self.async_create_entry(title="Telegram Channels", data=self.data)
+   async def async_step_channels(self, user_input=None):
+       errors = {}
+       if user_input is not None:
+           self.channels = [id for id, selected in user_input["channels"].items() if selected]
+           return self.async_create_entry(
+               title="Telegram Channels",
+               data={
+                   "api_id": self.api_id,
+                   "api_hash": self.api_hash,
+                   "phone": self.phone,
+                   "channels": self.channels,
+               },
+           )
 
-        dialogs = await self.client.get_dialogs()
-        channels = {dialog.name: dialog.name for dialog in dialogs if dialog.is_channel}
+       channels = await self.hass.async_add_executor_job(self.get_channel_list)
+       channel_options = {channel['id']: channel['name'] for channel in channels}
+       default_channels = self.channels if self.channels else list(channel_options.keys())
 
-        # Здесь мы создаем словарь с чекбоксами для каждого канала
-        channels_schema = {vol.Required(channel, default=False): bool for channel in channels}
-
-        return self.async_show_form(
-            step_id="channels",
-            data_schema=vol.Schema(channels_schema),
-            errors=errors,
-        )
+       return self.async_show_form(
+           step_id="channels",
+           data_schema=vol.Schema(
+               {
+                   vol.Required("channels", default=default_channels): cv.multi_select(channel_options),
+               }
+           ),
+           errors=errors,
+       )
 
 
