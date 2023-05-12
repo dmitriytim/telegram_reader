@@ -101,14 +101,14 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_channels(self, user_input=None):
         errors = {}
         if user_input is not None:
-            self.channels = [id for id, selected in user_input["channels"].items() if selected]
+            channels = [channel_id for channel_id, selected in user_input["channels"].items() if selected]
             return self.async_create_entry(
                 title="Telegram Channels",
                 data={
                     "api_id": self.api_id,
                     "api_hash": self.api_hash,
                     "phone": self.phone,
-                    "channels": self.channels,
+                    "channels": channels,
                 },
             )
 
@@ -120,12 +120,13 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="channels",
             data_schema=vol.Schema(
                 {
-                    vol.Required("channels", default=self.channels): vol.Schema(
-                        {channel_id: str for channel_id in channels.keys()}
+                    vol.Required("channels", default=self.channels if hasattr(self, "channels") else []): vol.Schema(
+                        {channel_id: str(channel_id) for channel_id in channels.keys()}
                     ),
                 }
             ),
             errors=errors,
         )
+
 
 
