@@ -101,25 +101,17 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
         if user_input is not None:
             self.data.update(user_input)
-            return self.async_create_entry(title="Telegram Channels", data=user_input)
+            return self.async_create_entry(title="Telegram Channels", data=self.data)
 
         dialogs = await self.client.get_dialogs()
         channels = {dialog.name: dialog.name for dialog in dialogs if dialog.is_channel}
 
-        # Если у нас уже есть запись, используем сохраненные каналы как значения по умолчанию
-#         if self._async_current_entries():
-#             entry = self._async_current_entries()[0]
-#             default_channels = entry.data.get("channels", [])
-#         else:
-#             default_channels = []
-        default_channels = []
+        # Здесь мы создаем словарь с чекбоксами для каждого канала
+        channels_schema = {vol.Required(channel, default=False): bool for channel in channels}
+
         return self.async_show_form(
             step_id="channels",
-            data_schema=vol.Schema(
-                {
-                    vol.Required("channels", default=default_channels): vol.MultiSelect(channels),
-                }
-            ),
+            data_schema=vol.Schema(channels_schema),
             errors=errors,
         )
 
