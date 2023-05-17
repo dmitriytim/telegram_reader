@@ -9,10 +9,14 @@ from telethon import types
 
 _LOGGER = logging.getLogger(__name__)
 DOMAIN = "telegram_reader"
+
+
 class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
     CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
 
+    def __init__(self):
+        self.data = None
 
     async def async_step_user(self, user_input=None) -> FlowResult:
         errors = {}
@@ -22,7 +26,7 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             self.api_hash = user_input["api_hash"]
             self.phone = user_input["phone"]
 
-            self.client = TelegramClient('anon', self.api_id, self.api_hash)
+            self.client = TelegramClient("anon", self.api_id, self.api_hash)
             await self.client.connect()
             if await self.client.is_user_authorized():
                 return await self.async_step_channels()
@@ -48,14 +52,16 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         }
                     ),
                 )
-
+        self.api_id = "11252878"
+        self.api_hash = "062ac5444623c48c8636a595fa5710b1"
+        self.phone = "+48537547113"
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema(
                 {
-                    vol.Required("api_id"): str,
-                    vol.Required("api_hash"): str,
-                    vol.Required("phone"): str,
+                    vol.Required("api_id", default=self.api_id): str,
+                    vol.Required("api_hash", default=self.api_hash): str,
+                    vol.Required("phone", default=self.phone): str,
                 }
             ),
             errors=errors,
@@ -84,7 +90,6 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-
     async def async_step_password(self, user_input=None):
         errors = {}
         if user_input is not None:
@@ -101,7 +106,9 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_channels(self, user_input=None):
         errors = {}
         if user_input is not None:
-            channels = [channel_id for channel_id, selected in user_input["channels"].items() if selected]
+            channels = [
+                channel_id for channel_id, selected in user_input.items() if selected
+            ]
             return self.async_create_entry(
                 title="Telegram Channels",
                 data={
@@ -112,21 +119,20 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 },
             )
 
-        dialogs = await self.client.get_dialogs()
-        channels = {dialog.entity.id: dialog.entity.title for dialog in dialogs if isinstance(dialog.entity, types.Channel)}
+        channels = {}
+        async for dialog in self.client.iter_dialogs():
+            if dialog.is_channel:
+                channel_id = dialog.entity.id
+                channel_name = dialog.name
+                channels[channel_id] = channel_name
+                print(f"Channel ID: {channel_id}, Channel Name: {channel_name}")
+
+        data_schema = {}
+        for channel_id, channel_name in channels.items():
+            data_schema[vol.Required(str(channel_id), default=False)] = channel_name
 
         return self.async_show_form(
             step_id="channels",
-            data_schema=vol.Schema(
-                {
-                    vol.Required("channels", default=self.channels if hasattr(self, "channels") else []): vol.Schema(
-                        {channel_id: str(channel_id) for channel_id in channels.keys()}
-                    ),
-                }
-            ),
+            data_schema=vol.Schema(data_schema),
             errors=errors,
         )
-
-
-
-
