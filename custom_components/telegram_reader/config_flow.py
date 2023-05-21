@@ -129,7 +129,7 @@ class MyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         data_schema = {}
         for channel_id, channel_name in channels.items():
-            data_schema[vol.Required(str(channel_id), default=False)] = channel_name
+            data_schema[vol.Required(str(channel_id), default=False): bool] = channel_name
 
         return self.async_show_form(
             step_id="channels",
